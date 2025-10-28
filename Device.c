@@ -1,9 +1,25 @@
 #include "Device.h"
+#include <stdlib.h>
+#include <string.h>
 #include <stddef.h>
 
-Device Device_Create(const ID id)
+struct Device
 {
-    return (Device){ .id = id };
+    ID       const id;
+    bool           is_busy;
+    Request*       current_request;
+};
+
+Device* Device_Create(const ID id)
+{
+    Device* device = malloc(sizeof(Device));
+
+    if (!device)
+        return NULL;
+    
+    Device tmp = (Device) { .id = id };
+    memcpy(device, &tmp, sizeof(Device));
+    return device;
 }
 
 void Device_StartService(Device* const device, Request* request, const TimeMoment current_time, const double service_time)
@@ -15,7 +31,7 @@ void Device_StartService(Device* const device, Request* request, const TimeMomen
     request->service_end_time = current_time + (TimeMoment)service_time;
 }
 
-void Device_FinishService(Device* const device)
+Request* Device_FinishService(Device* const device)
 {
     device->is_busy = false;
     Request* finished = device->current_request;
@@ -23,8 +39,18 @@ void Device_FinishService(Device* const device)
     return finished;
 }
 
-TimeMoment Device_GetPlannedReleaseTime(Device* const device)
+bool Device_IsBusy(const Device* const device)
+{
+    return device->is_busy;
+}
+
+TimeMoment Device_GetPlannedReleaseTime(const Device* const device)
 {
     const Request* const cur = device->current_request;
     return cur ? cur->service_end_time : -1;
+}
+
+void Device_Destroy(const Device* const device)
+{
+    free(device);
 }
