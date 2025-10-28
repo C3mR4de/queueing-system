@@ -4,15 +4,31 @@
 #include <time.h>
 #include "Request.h"
 
-Source Source_Create(const ID id, const double min_interval, const double max_interval)
+struct Source
 {
-    return (Source)
+    ID      const id;
+    MT19937 const random;
+    double  const min_interval;
+    double  const max_interval;
+};
+
+Source* Source_Create(const ID id, const double min_interval, const double max_interval)
+{
+    Source* const source = malloc(sizeof(Source));
+
+    if (!source)
+        return NULL;
+
+    Source tmp = (Source)
     {
         .id           = id,
         .random       = MT19937_Create(time(NULL)),
         .min_interval = min_interval,
         .max_interval = max_interval
     };
+
+    memcpy(source, &tmp, sizeof(Source));
+    return source;
 }
 
 Request* Source_GenerateRequest(Source* const source, const TimeMoment current_time)
@@ -26,4 +42,9 @@ Request* Source_GenerateRequest(Source* const source, const TimeMoment current_t
 double Source_NextArrivalInterval(Source* const source)
 {
     return source->min_interval + (source->max_interval - source->min_interval) * MT19937_RandRange(&source->random, 0, 1);
+}
+
+void Source_Destroy(Source* const source)
+{
+    free(source);
 }
