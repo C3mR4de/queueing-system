@@ -12,6 +12,6 @@ typedef struct
 Dispatcher;
 
 Dispatcher Dispatcher_Create(void);
-Device* Dispatcher_SelectDevice(Dispatcher* dispatcher, Vector* devices);
+Device*    Dispatcher_SelectDevice(Dispatcher* dispatcher, Vector* devices);
 
 #endif
