@@ -2,11 +2,13 @@
 #define VECTOR_H
 
 #include <stddef.h>
+#include <stdbool.h>
 
 typedef struct Vector Vector;
 
 Vector* Vector_Create(size_t capacity);
-Vector* Vector_Get(Vector* vector, size_t index);
-Vector* Vector_Size(Vector* vector);
+void*   Vector_Get(const Vector* vector, size_t index);
+bool    Vector_Set(Vector* vector, size_t index, void* element);
+size_t  Vector_Size(const Vector* vector);
 
 #endif

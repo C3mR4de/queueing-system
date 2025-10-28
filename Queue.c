@@ -11,8 +11,12 @@ struct Queue
 
 Queue* Queue_Create(const size_t capacity)
 {
-    Queue* const queue         = malloc(sizeof(Queue));
-    size_t const real_capacity = capacity + 1;
+    Queue* const queue = malloc(sizeof(Queue));
+
+    if (!queue)
+        return NULL;
+
+    const size_t real_capacity = capacity + 1;
 
     *queue = (Queue)
     {
@@ -23,7 +27,11 @@ Queue* Queue_Create(const size_t capacity)
         .tail     = 0
     };
 
-    return queue;
+    if (queue->data)
+        return queue;
+
+    free(queue);
+    return NULL;
 }
 
 bool Queue_Enqueue(Queue* const queue, void* const element)
@@ -55,4 +63,10 @@ bool Queue_IsEmpty(const Queue* const queue)
 bool Queue_Size(const Queue* const queue)
 {
     return queue->size;
+}
+
+void Queue_Destroy(const Queue* const queue)
+{
+    free(queue->data);
+    free(queue);
 }
