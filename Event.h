@@ -15,8 +15,7 @@ typedef struct
 }
 Event;
 
-Event   Event_CreateOnStack(Type type, TimeMoment time, Source* source, Device* device);
-Event*  Event_CreateOnHeap(Type type, TimeMoment time, Source* source, Device* device);
-void    Event_Destroy(const Event* event);
+Event* Event_Create(Type type, TimeMoment time, Source* source, Device* device);
+void   Event_Destroy(const Event* event);
 
 #endif
