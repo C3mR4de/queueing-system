@@ -6,12 +6,17 @@
 
 typedef enum { ARRIVAL, RELEASE } Type;
 
-typedef struct Event Event;
+typedef struct 
+{
+    Type       const type;
+    TimeMoment const time;
+    Source*    const source;
+    Device*    const device;
+}
+Event;
 
-Event* Event_Create(Type type, TimeMoment time, Source* source, Device* device);
-Type   Event_GetType(const Event* event);
-Type   Event_GetTime(const Event* event);
-Type   Event_GetSource(const Event* event);
-void   Event_Destroy(const Event* event);
+Event   Event_CreateOnStack(Type type, TimeMoment time, Source* source, Device* device);
+Event*  Event_CreateOnHeap(Type type, TimeMoment time, Source* source, Device* device);
+void    Event_Destroy(const Event* event);
 
 #endif
