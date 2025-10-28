@@ -14,7 +14,7 @@ Buffer;
 Buffer   Buffer_Create(size_t capacity);
 bool     Buffer_Add(Buffer* buffer, Request* request);
 Request* Buffer_Poll(Buffer* buffer);
-bool     Buffer_IsEmpty(Buffer* buffer);
-size_t   Buffer_Size(Buffer* buffer);
+bool     Buffer_IsEmpty(const Buffer* buffer);
+size_t   Buffer_Size(const Buffer* buffer);
 
 #endif

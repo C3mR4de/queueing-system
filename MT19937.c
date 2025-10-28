@@ -1,5 +1,5 @@
 #include "MT19937.h"
-#include <threads.h>
+#include <assert.h>
 
 #define MT_M          397
 #define MT_MATRIX_A   0x9908B0DFUL
@@ -20,6 +20,8 @@ MT19937 MT19937_Create(const uint32_t seed)
 
 static void __MT19937_Generate(MT19937* const gen)
 {
+    assert(gen != NULL);
+
     uint32_t y;
     static const uint32_t mag01[2] = {0x0UL, MT_MATRIX_A};
     int kk = 0;
@@ -44,6 +46,8 @@ static void __MT19937_Generate(MT19937* const gen)
 
 uint32_t MT19937_Rand(MT19937* const gen)
 {
+    assert(gen != NULL);
+
     if (gen->index >= MT_N)
         __MT19937_Generate(gen);
 
@@ -59,6 +63,8 @@ uint32_t MT19937_Rand(MT19937* const gen)
 
 double MT19937_RandRange(MT19937* const gen, const double a, const double b)
 {
+    assert(gen != NULL);
+
     if (a >= b)
         return a;
 

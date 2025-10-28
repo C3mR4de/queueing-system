@@ -1,4 +1,5 @@
 #include "Dispatcher.h"
+#include <assert.h>
 
 Dispatcher Dispatcher_Create(void)
 {
@@ -7,6 +8,8 @@ Dispatcher Dispatcher_Create(void)
 
 Device* Dispatcher_SelectDevice(Dispatcher* dispatcher, Vector* devices)
 {
+    assert(dispatcher != NULL);
+
     const size_t n = Vector_Size(devices);
 
     for (size_t i = 1; i <= n; ++i)

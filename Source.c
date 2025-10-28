@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <assert.h>
 #include "Request.h"
 
 struct Source
@@ -31,20 +32,23 @@ Source* Source_Create(const ID id, const double min_interval, const double max_i
     return source;
 }
 
-Request* Source_GenerateRequest(Source* const source, const TimeMoment current_time)
+Request* Source_GenerateRequest(const Source* const source, const TimeMoment current_time)
 {
+    assert(source != NULL);
+
     Request* const new_request = malloc(sizeof(Request));
     Request  const tmp         = Request_Create(source->id, current_time);
     memcpy(new_request, &tmp, sizeof(Request));
     return new_request;
 }
 
-double Source_NextArrivalInterval(Source* const source)
+double Source_NextArrivalInterval(const Source* const source)
 {
+    assert(source != NULL);
     return source->min_interval + (source->max_interval - source->min_interval) * MT19937_RandRange(&source->random, 0, 1);
 }
 
-void Source_Destroy(Source* const source)
+void Source_Destroy(const Source* const source)
 {
     free(source);
 }

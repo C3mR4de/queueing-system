@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stddef.h>
+#include <assert.h>
 
 struct Device
 {
@@ -24,6 +25,8 @@ Device* Device_Create(const ID id)
 
 void Device_StartService(Device* const device, Request* request, const TimeMoment current_time, const double service_time)
 {
+    assert(device != NULL);
+
     device->is_busy = true;
     device->current_request = request;
 
@@ -33,19 +36,24 @@ void Device_StartService(Device* const device, Request* request, const TimeMomen
 
 Request* Device_FinishService(Device* const device)
 {
+    assert(device != NULL);
+
     device->is_busy = false;
     Request* finished = device->current_request;
     device->current_request = NULL;
+
     return finished;
 }
 
 bool Device_IsBusy(const Device* const device)
 {
+    assert(device != NULL);
     return device->is_busy;
 }
 
 TimeMoment Device_GetPlannedReleaseTime(const Device* const device)
 {
+    assert(device != NULL);
     const Request* const cur = device->current_request;
     return cur ? cur->service_end_time : -1;
 }

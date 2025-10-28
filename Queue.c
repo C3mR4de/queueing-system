@@ -1,4 +1,5 @@
 #include "Queue.h"
+#include <assert.h>
 
 struct Queue
 {
@@ -36,6 +37,8 @@ Queue* Queue_Create(const size_t capacity)
 
 bool Queue_Enqueue(Queue* const queue, void* const element)
 {
+    assert(queue != NULL);
+
     if ((queue->tail + 1) % queue->capacity == queue->head)
         return false;
     
@@ -46,6 +49,8 @@ bool Queue_Enqueue(Queue* const queue, void* const element)
 
 void* Queue_Dequeue(Queue* const queue)
 {
+    assert(queue != NULL);
+
     if (Queue_IsEmpty(queue))
         return NULL;
 
@@ -57,16 +62,19 @@ void* Queue_Dequeue(Queue* const queue)
 
 bool Queue_IsEmpty(const Queue* const queue)
 {
+    assert(queue != NULL);
     return queue->head == queue->tail;
 }
 
 bool Queue_Size(const Queue* const queue)
 {
+    assert(queue != NULL);
     return queue->size;
 }
 
 void Queue_Destroy(const Queue* const queue)
 {
+    assert(queue != NULL);
     free(queue->data);
     free(queue);
 }
