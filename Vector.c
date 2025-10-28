@@ -1,4 +1,5 @@
 #include "Vector.h"
+#include <stdlib.h>
 
 struct Vector
 {
