@@ -1,5 +1,7 @@
 #include "Event.h"
 #include <assert.h>
+#include <stdlib.h>
+#include <string.h>
 
 Event* Event_Create(const Type type, const TimeMoment time, Source* const source, Device* const device)
 {
