@@ -6,10 +6,9 @@ struct Vector
 {
     void** data;
     size_t size;
-    size_t capacity;
 };
 
-Vector* Vector_Create(const size_t capacity)
+Vector* Vector_Create(const size_t size)
 {
     Vector* vector = malloc(sizeof(Vector));
     
@@ -18,9 +17,8 @@ Vector* Vector_Create(const size_t capacity)
 
     *vector = (Vector)
     {
-        .data     = malloc(capacity * sizeof(void*)),
-        .size     = 0,
-        .capacity = capacity,
+        .data     = malloc(size * sizeof(void*)),
+        .size     = size
     };
 
     if (vector->data)
@@ -33,9 +31,7 @@ Vector* Vector_Create(const size_t capacity)
 void* Vector_Get(const Vector* const vector, const size_t index)
 {
     assert(vector);
-
-    if (index >= vector->size)
-        return NULL;
+    assert(index < vector->size);
 
     return vector->data[index];
 }
@@ -43,9 +39,7 @@ void* Vector_Get(const Vector* const vector, const size_t index)
 bool Vector_Set(Vector* const vector, const size_t index, void* const element)
 {
     assert(vector);
-
-    if (index >= vector->size)
-        return false;
+    assert(index < vector->size);
 
     vector->data[index] = element;
     return true;
