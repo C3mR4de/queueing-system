@@ -10,6 +10,6 @@ Vector* Vector_Create(size_t capacity);
 void*   Vector_Get(const Vector* vector, size_t index);
 bool    Vector_Set(Vector* vector, size_t index, void* element);
 size_t  Vector_Size(const Vector* vector);
-void    Vector_Destroy(const Vector* const vector);
+void    Vector_Destroy(Vector* const vector);
 
 #endif

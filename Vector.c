@@ -57,9 +57,10 @@ size_t Vector_Size(const Vector* const vector)
     return vector->size;
 }
 
-void Vector_Destroy(const Vector* const vector)
+void Vector_Destroy(Vector* const vector)
 {
     assert(vector);
+
     free(vector->data);
     free(vector);
 }

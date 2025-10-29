@@ -58,7 +58,7 @@ TimeMoment Device_GetPlannedReleaseTime(const Device* const device)
     return cur ? cur->service_end_time : -1;
 }
 
-void Device_Destroy(const Device* const device)
+void Device_Destroy(Device* const device)
 {
     free(device);
 }

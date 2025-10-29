@@ -22,7 +22,7 @@ Event* Event_Create(const Type type, const TimeMoment time, Source* const source
     return event;
 }
 
-void Event_Destroy(const Event* const event)
+void Event_Destroy(Event* const event)
 {
     free(event);
 }

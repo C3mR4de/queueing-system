@@ -16,6 +16,6 @@ typedef struct
 Event;
 
 Event* Event_Create(Type type, TimeMoment time, Source* source, Device* device);
-void   Event_Destroy(const Event* event);
+void   Event_Destroy(Event* event);
 
 #endif

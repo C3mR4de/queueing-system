@@ -11,6 +11,6 @@ void       Device_StartService(Device* device, Request* request, TimeMoment curr
 Request*   Device_FinishService(Device* device);
 bool       Device_IsBusy(const Device* device);
 TimeMoment Device_GetPlannedReleaseTime(const Device* device);
-void       Device_Destroy(const Device* device);
+void       Device_Destroy(Device* device);
 
 #endif

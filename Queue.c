@@ -72,7 +72,7 @@ bool Queue_Size(const Queue* const queue)
     return queue->size;
 }
 
-void Queue_Destroy(const Queue* const queue)
+void Queue_Destroy(Queue* const queue)
 {
     assert(queue);
 

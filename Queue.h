@@ -12,6 +12,6 @@ bool   Queue_Enqueue(Queue* queue, void* element);
 void*  Queue_Dequeue(Queue* queue);
 bool   Queue_IsEmpty(const Queue* queue);
 bool   Queue_Size(const Queue* queue);
-void   Queue_Destroy(const Queue* queue);
+void   Queue_Destroy(Queue* queue);
 
 #endif

@@ -8,7 +8,7 @@
 struct Source
 {
     ID      const id;
-    MT19937 const random;
+    MT19937       random;
     double  const min_interval;
     double  const max_interval;
 };
@@ -42,13 +42,13 @@ Request* Source_GenerateRequest(const Source* const source, const TimeMoment cur
     return new_request;
 }
 
-double Source_NextArrivalInterval(const Source* const source)
+double Source_NextArrivalInterval(Source* const source)
 {
     assert(source);
     return source->min_interval + (source->max_interval - source->min_interval) * MT19937_RandRange(&source->random, 0, 1);
 }
 
-void Source_Destroy(const Source* const source)
+void Source_Destroy(Source* const source)
 {
     free(source);
 }
