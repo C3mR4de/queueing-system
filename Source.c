@@ -35,11 +35,7 @@ Source* Source_Create(const ID id, const double min_interval, const double max_i
 Request* Source_GenerateRequest(const Source* const source, const TimeMoment current_time)
 {
     assert(source);
-
-    Request* const new_request = malloc(sizeof(Request));
-    Request  const tmp         = Request_Create(source->id, current_time);
-    memcpy(new_request, &tmp, sizeof(Request));
-    return new_request;
+    return Request_Create(source->id, current_time);
 }
 
 double Source_NextArrivalInterval(Source* const source)

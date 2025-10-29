@@ -1,14 +1,23 @@
 #include "Request.h"
-#include <stddef.h>
+#include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 
-Request Request_Create(ID source_id, TimeMoment arrival_time)
+Request* Request_Create(ID source_id, TimeMoment arrival_time)
 {
-    return (Request)
+    Request* request = malloc(sizeof(Request));
+
+    if (!request)
+        return NULL;
+
+    Request tmp = (Request)
     {
         .source_id    = source_id,
         .arrival_time = arrival_time
     };
+
+    memcpy(request, &tmp, sizeof(Request));
+    return request;
 }
 
 TimeMoment Request_GetWaitTime(const Request* const request)
