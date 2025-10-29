@@ -34,7 +34,7 @@ Source* Source_Create(const ID id, const double min_interval, const double max_i
 
 Request* Source_GenerateRequest(const Source* const source, const TimeMoment current_time)
 {
-    assert(source != NULL);
+    assert(source);
 
     Request* const new_request = malloc(sizeof(Request));
     Request  const tmp         = Request_Create(source->id, current_time);
@@ -44,7 +44,7 @@ Request* Source_GenerateRequest(const Source* const source, const TimeMoment cur
 
 double Source_NextArrivalInterval(const Source* const source)
 {
-    assert(source != NULL);
+    assert(source);
     return source->min_interval + (source->max_interval - source->min_interval) * MT19937_RandRange(&source->random, 0, 1);
 }
 

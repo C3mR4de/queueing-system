@@ -12,24 +12,24 @@ Buffer Buffer_Create(size_t capacity)
 
 bool Buffer_Add(Buffer* const buffer, Request* const request)
 {
-    assert(buffer != NULL);
+    assert(buffer);
     return Queue_Enqueue(buffer->queue, request);
 }
 
 Request* Buffer_Poll(Buffer* const buffer)
 {
-    assert(buffer != NULL);
+    assert(buffer);
     return Queue_Dequeue(buffer->queue);
 }
 
 bool Buffer_IsEmpty(const Buffer* const buffer)
 {
-    assert(buffer != NULL);
+    assert(buffer);
     return Queue_IsEmpty(buffer->queue);
 }
 
 size_t Buffer_Size(const Buffer* const buffer)
 {
-    assert(buffer != NULL);
+    assert(buffer);
     return Queue_Size(buffer->queue);
 }

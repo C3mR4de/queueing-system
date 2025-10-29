@@ -32,7 +32,7 @@ Vector* Vector_Create(const size_t capacity)
 
 void* Vector_Get(const Vector* const vector, const size_t index)
 {
-    assert(vector != NULL);
+    assert(vector);
 
     if (index >= vector->size)
         return NULL;
@@ -42,7 +42,7 @@ void* Vector_Get(const Vector* const vector, const size_t index)
 
 bool Vector_Set(Vector* const vector, const size_t index, void* const element)
 {
-    assert(vector != NULL);
+    assert(vector);
 
     if (index >= vector->size)
         return false;
@@ -53,13 +53,13 @@ bool Vector_Set(Vector* const vector, const size_t index, void* const element)
 
 size_t Vector_Size(const Vector* const vector)
 {
-    assert(vector != NULL);
+    assert(vector);
     return vector->size;
 }
 
 void Vector_Destroy(const Vector* const vector)
 {
-    assert(vector != NULL);
+    assert(vector);
     free(vector->data);
     free(vector);
 }

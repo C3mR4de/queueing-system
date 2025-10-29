@@ -25,7 +25,7 @@ Device* Device_Create(const ID id)
 
 void Device_StartService(Device* const device, Request* request, const TimeMoment current_time, const double service_time)
 {
-    assert(device != NULL);
+    assert(device);
 
     device->is_busy = true;
     device->current_request = request;
@@ -36,7 +36,7 @@ void Device_StartService(Device* const device, Request* request, const TimeMomen
 
 Request* Device_FinishService(Device* const device)
 {
-    assert(device != NULL);
+    assert(device);
 
     device->is_busy = false;
     Request* finished = device->current_request;
@@ -47,13 +47,13 @@ Request* Device_FinishService(Device* const device)
 
 bool Device_IsBusy(const Device* const device)
 {
-    assert(device != NULL);
+    assert(device);
     return device->is_busy;
 }
 
 TimeMoment Device_GetPlannedReleaseTime(const Device* const device)
 {
-    assert(device != NULL);
+    assert(device);
     const Request* const cur = device->current_request;
     return cur ? cur->service_end_time : -1;
 }

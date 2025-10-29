@@ -37,7 +37,7 @@ Queue* Queue_Create(const size_t capacity)
 
 bool Queue_Enqueue(Queue* const queue, void* const element)
 {
-    assert(queue != NULL);
+    assert(queue);
 
     if ((queue->tail + 1) % queue->capacity == queue->head)
         return false;
@@ -49,7 +49,7 @@ bool Queue_Enqueue(Queue* const queue, void* const element)
 
 void* Queue_Dequeue(Queue* const queue)
 {
-    assert(queue != NULL);
+    assert(queue);
 
     if (Queue_IsEmpty(queue))
         return NULL;
@@ -62,19 +62,20 @@ void* Queue_Dequeue(Queue* const queue)
 
 bool Queue_IsEmpty(const Queue* const queue)
 {
-    assert(queue != NULL);
+    assert(queue);
     return queue->head == queue->tail;
 }
 
 bool Queue_Size(const Queue* const queue)
 {
-    assert(queue != NULL);
+    assert(queue);
     return queue->size;
 }
 
 void Queue_Destroy(const Queue* const queue)
 {
-    assert(queue != NULL);
+    assert(queue);
+
     free(queue->data);
     free(queue);
 }

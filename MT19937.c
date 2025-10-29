@@ -20,7 +20,7 @@ MT19937 MT19937_Create(const uint32_t seed)
 
 static void __MT19937_Generate(MT19937* const gen)
 {
-    assert(gen != NULL);
+    assert(gen);
 
     uint32_t y;
     static const uint32_t mag01[2] = {0x0UL, MT_MATRIX_A};
@@ -46,7 +46,7 @@ static void __MT19937_Generate(MT19937* const gen)
 
 uint32_t MT19937_Rand(MT19937* const gen)
 {
-    assert(gen != NULL);
+    assert(gen);
 
     if (gen->index >= MT_N)
         __MT19937_Generate(gen);
@@ -63,7 +63,7 @@ uint32_t MT19937_Rand(MT19937* const gen)
 
 double MT19937_RandRange(MT19937* const gen, const double a, const double b)
 {
-    assert(gen != NULL);
+    assert(gen);
 
     if (a >= b)
         return a;

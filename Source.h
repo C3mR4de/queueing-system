@@ -3,6 +3,7 @@
 
 #include "CommonTypedefs.h"
 #include "MT19937.h"
+#include "Request.h"
 
 typedef struct Source Source;
 

@@ -8,7 +8,7 @@ Dispatcher Dispatcher_Create(void)
 
 Device* Dispatcher_SelectDevice(Dispatcher* dispatcher, Vector* devices)
 {
-    assert(dispatcher != NULL);
+    assert(dispatcher);
 
     const size_t n = Vector_Size(devices);
 
