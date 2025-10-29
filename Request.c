@@ -20,6 +20,11 @@ Request* Request_Create(ID source_id, TimeMoment arrival_time)
     return request;
 }
 
+void Request_Destroy(Request* const request)
+{
+    free(request);
+}
+
 TimeMoment Request_GetWaitTime(const Request* const request)
 {
     assert(request);

@@ -10,6 +10,12 @@ Buffer Buffer_Create(size_t capacity)
     };
 }
 
+void Buffer_Destroy(Buffer* const buffer)
+{
+    assert(buffer);
+    Queue_Destroy(buffer->queue);
+}
+
 bool Buffer_Add(Buffer* const buffer, Request* const request)
 {
     assert(buffer);

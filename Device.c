@@ -23,15 +23,20 @@ Device* Device_Create(const ID id)
     return device;
 }
 
-void Device_StartService(Device* const device, Request* request, const TimeMoment current_time, const double service_time)
+void Device_Destroy(Device* const device)
+{
+    free(device);
+}
+
+void Device_StartService(Device* const device, Request* const request, const TimeMoment current_time, const double service_time)
 {
     assert(device);
 
-    device->is_busy = true;
+    device->is_busy         = true;
     device->current_request = request;
 
     request->service_start_time = current_time;
-    request->service_end_time = current_time + (TimeMoment)service_time;
+    request->service_end_time   = current_time + (TimeMoment)service_time;
 }
 
 Request* Device_FinishService(Device* const device)
@@ -56,9 +61,4 @@ TimeMoment Device_GetPlannedReleaseTime(const Device* const device)
     assert(device);
     const Request* const cur = device->current_request;
     return cur ? cur->service_end_time : -1;
-}
-
-void Device_Destroy(Device* const device)
-{
-    free(device);
 }

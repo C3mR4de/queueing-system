@@ -28,6 +28,14 @@ Vector* Vector_Create(const size_t size)
     return NULL;
 }
 
+void Vector_Destroy(Vector* const vector)
+{
+    assert(vector);
+
+    free(vector->data);
+    free(vector);
+}
+
 void* Vector_Get(const Vector* const vector, const size_t index)
 {
     assert(vector);
@@ -49,12 +57,4 @@ size_t Vector_Size(const Vector* const vector)
 {
     assert(vector);
     return vector->size;
-}
-
-void Vector_Destroy(Vector* const vector)
-{
-    assert(vector);
-
-    free(vector->data);
-    free(vector);
 }

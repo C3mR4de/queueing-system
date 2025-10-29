@@ -32,6 +32,11 @@ Source* Source_Create(const ID id, const double min_interval, const double max_i
     return source;
 }
 
+void Source_Destroy(Source* const source)
+{
+    free(source);
+}
+
 Request* Source_GenerateRequest(const Source* const source, const TimeMoment current_time)
 {
     assert(source);
@@ -42,9 +47,4 @@ double Source_NextArrivalInterval(Source* const source)
 {
     assert(source);
     return source->min_interval + (source->max_interval - source->min_interval) * MT19937_RandRange(&source->random, 0, 1);
-}
-
-void Source_Destroy(Source* const source)
-{
-    free(source);
 }

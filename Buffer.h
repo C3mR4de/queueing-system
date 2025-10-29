@@ -11,7 +11,9 @@ typedef struct
 }
 Buffer;
 
-Buffer   Buffer_Create(size_t capacity);
+Buffer Buffer_Create(size_t capacity);
+void   Buffer_Destroy(Buffer* buffer);
+
 bool     Buffer_Add(Buffer* buffer, Request* request);
 Request* Buffer_Poll(Buffer* buffer);
 bool     Buffer_IsEmpty(const Buffer* buffer);

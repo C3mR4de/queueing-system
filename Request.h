@@ -12,7 +12,9 @@ typedef struct
 }
 Request;
 
-Request*   Request_Create(ID source_id, TimeMoment arrival_time);
+Request* Request_Create(ID source_id, TimeMoment arrival_time);
+void     Request_Destroy(Request* request);
+
 TimeMoment Request_GetWaitTime(const Request* request);
 TimeMoment Request_GetServiceTime(const Request* request);
 
