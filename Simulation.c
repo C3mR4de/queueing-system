@@ -1,10 +1,12 @@
 #include "Simulation.h"
-#include "Event.h"
 #include <inttypes.h>
+#include <stdlib.h>
 #include <assert.h>
 #include <string.h>
 #include <math.h>
 #include "Listener.h"
+#include "Event.h"
+#include "Queue.h"
 
 struct Simulation
 {

@@ -1,4 +1,5 @@
 #include "Queue.h"
+#include <stdlib.h>
 #include <assert.h>
 
 struct Queue
@@ -77,7 +78,7 @@ bool Queue_IsEmpty(const Queue* const queue)
     return queue->head == queue->tail;
 }
 
-bool Queue_Size(const Queue* const queue)
+size_t Queue_Size(const Queue* const queue)
 {
     assert(queue);
     return queue->size;

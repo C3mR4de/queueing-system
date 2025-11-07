@@ -1,13 +1,13 @@
 #ifndef BUFFER_H
 #define BUFFER_H
 
-#include "Queue.h"
+#include "CircularQueue.h"
 #include "Request.h"
 
 typedef struct
 {
-    size_t const capacity;
-    Queue* const queue;
+    size_t         const capacity;
+    CircularQueue* const queue;
 }
 Buffer;
 
