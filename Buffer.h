@@ -1,22 +1,17 @@
-#ifndef BUFFER_H
-#define BUFFER_H
+#ifndef CIRCULAR_QUEUE_H
+#define CIRCULAR_QUEUE_H
 
-#include "CircularQueue.h"
-#include "Request.h"
+#include <stddef.h>
+#include <stdbool.h>
 
-typedef struct
-{
-    size_t         const capacity;
-    CircularQueue* const queue;
-}
-Buffer;
+typedef struct Buffer Buffer;
 
-Buffer Buffer_Create(size_t capacity);
-void   Buffer_Destroy(Buffer* buffer);
+Buffer* Buffer_Create(size_t capacity);
+void    Buffer_Destroy(Buffer* buffer);
 
-bool     Buffer_Add(Buffer* buffer, Request* request);
-Request* Buffer_Poll(Buffer* buffer);
-bool     Buffer_IsEmpty(const Buffer* buffer);
-size_t   Buffer_Size(const Buffer* buffer);
+bool  Buffer_Add(Buffer* buffer, void* element);
+void* Buffer_Poll(Buffer* buffer);
+bool  Buffer_IsEmpty(const Buffer* buffer);
+bool  Buffer_Size(const Buffer* buffer);
 
 #endif

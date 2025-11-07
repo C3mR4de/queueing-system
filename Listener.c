@@ -18,7 +18,7 @@ void Listener_Destroy(Listener* const listener)
     free(listener);
 }
 
-void Listener_OnStep(Listener* const listener, const size_t step, const TimeMoment time, const char* message, Vector* const devices, const Buffer buffer)
+void Listener_OnStep(Listener* const listener, const size_t step, const TimeMoment time, const char* message, Vector* const devices, const Buffer* const buffer)
 {
     printf("Шаг %zu (t = %" PRId32 "): %s\n", step, time, message);
 }

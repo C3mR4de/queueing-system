@@ -47,6 +47,7 @@ void Queue_Destroy(Queue* const queue)
 bool Queue_Enqueue(Queue* const queue, void* const element)
 {
     assert(queue);
+    assert(element);
 
     if ((queue->tail + 1) % queue->capacity == queue->head)
         return false;

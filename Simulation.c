@@ -12,7 +12,7 @@ struct Simulation
 {
     Vector*    sources;
     Vector*    devices;
-    Buffer     buffer;
+    Buffer*    buffer;
     Dispatcher dispatcher;
     Queue*     event_queue;
     MT19937    random;
@@ -51,7 +51,7 @@ Simulation* Simulation_Create(const size_t num_sources,
         .service_rate = service_rate,
     };
 
-    if (!(tmp.sources && tmp.devices && tmp.buffer.queue && tmp.event_queue && tmp.listener))
+    if (!(tmp.sources && tmp.devices && tmp.buffer && tmp.event_queue && tmp.listener))
         goto cleanup;
 
     for (size_t i = 0; i < num_sources; ++i)
@@ -101,10 +101,10 @@ void Simulation_Destroy(Simulation* const simulation)
 
     Queue_Destroy(simulation->event_queue);
 
-    while (!Buffer_IsEmpty(&simulation->buffer))
-        Request_Destroy(Buffer_Poll(&simulation->buffer));
+    while (!Buffer_IsEmpty(simulation->buffer))
+        Request_Destroy(Buffer_Poll(simulation->buffer));
 
-    Buffer_Destroy(&simulation->buffer);
+    Buffer_Destroy(simulation->buffer);
 
     if (simulation->devices)
     {
@@ -154,7 +154,7 @@ bool Simulation_Step(Simulation* const simulation)
 
             Request* const r = Source_GenerateRequest(e->source, simulation->current_time);
 
-            if (!Buffer_Add(&simulation->buffer, r))
+            if (!Buffer_Add(simulation->buffer, r))
             {
                 log_message = "Заявка от источника %" PRId32 " -> ОТКАЗ (буфер полон)\n";
                 Request_Destroy(r);
@@ -184,13 +184,13 @@ bool Simulation_Step(Simulation* const simulation)
 
     Event_Destroy(e);
 
-    if (Buffer_IsEmpty(&simulation->buffer))
+    if (Buffer_IsEmpty(simulation->buffer))
     {
         Device* const free = Dispatcher_SelectDevice(&simulation->dispatcher, simulation->devices);
 
         if (free)
         {
-            Request* const r = Buffer_Poll(&simulation->buffer);
+            Request* const r = Buffer_Poll(simulation->buffer);
             double service_time = -log(1 - MT19937_RandRange(&simulation->random, 0, 1) / simulation->service_rate);
             Device_StartService(free, r, simulation->current_time, service_time);
             Queue_Enqueue(simulation->event_queue, Event_Create(RELEASE, simulation->current_time + (TimeMoment)service_time, NULL, free));
