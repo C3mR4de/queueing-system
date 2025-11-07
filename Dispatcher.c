@@ -21,7 +21,7 @@ Device* Dispatcher_SelectDevice(Dispatcher* dispatcher, Vector* devices)
             dispatcher->last_used_device_index = index;
             return Vector_Get(devices, index);
         }
-
-        return NULL;
     }
+
+    return NULL;
 }
