@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <string.h>
 #include <math.h>
+#include <time.h>
 #include "Listener.h"
 #include "Event.h"
 #include "Queue.h"
@@ -44,6 +45,7 @@ Simulation* Simulation_Create(const size_t num_sources,
         .buffer       = Buffer_Create(buffer_size),
         .dispatcher   = Dispatcher_Create(),
         .event_queue  = Queue_Create(num_sources),
+        .random       = MT19937_Create(time(NULL)),
         .listener     = Listener_Create(),
         .step_counter = 0,
         .current_time = 0,
