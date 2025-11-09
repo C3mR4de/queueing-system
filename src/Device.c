@@ -13,7 +13,7 @@ struct Device
 
 Device* Device_Create(const ID id)
 {
-    Device* device = malloc(sizeof(Device));
+    Device* const device = malloc(sizeof(Device));
 
     if (!device)
         return NULL;
@@ -44,7 +44,7 @@ Request* Device_FinishService(Device* const device)
     assert(device);
 
     device->is_busy = false;
-    Request* finished = device->current_request;
+    Request* const finished = device->current_request;
     device->current_request = NULL;
 
     return finished;

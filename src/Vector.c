@@ -10,7 +10,7 @@ struct Vector
 
 Vector* Vector_Create(const size_t size)
 {
-    Vector* vector = malloc(sizeof(Vector));
+    Vector* const vector = malloc(sizeof(Vector));
     
     if (!vector)
         return NULL;

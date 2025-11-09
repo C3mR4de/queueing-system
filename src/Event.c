@@ -5,7 +5,7 @@
 
 Event* Event_Create(const Type type, const TimeMoment time, Source* const source, Device* const device)
 {
-    Event* event = malloc(sizeof(Event));
+    Event* const event = malloc(sizeof(Event));
 
     if (!event)
         return NULL;
