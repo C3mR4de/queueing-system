@@ -14,7 +14,6 @@ struct Simulation
     Vector*    sources;
     Vector*    devices;
     Buffer*    buffer;
-    Dispatcher dispatcher;
     Queue*     event_queue;
     MT19937    random;
     Listener*  listener;
@@ -43,7 +42,6 @@ Simulation* Simulation_Create(const size_t num_sources,
         .sources      = Vector_Create(num_sources),
         .devices      = Vector_Create(num_devices),
         .buffer       = Buffer_Create(buffer_size),
-        .dispatcher   = Dispatcher_Create(),
         .event_queue  = Queue_Create(num_sources),
         .random       = MT19937_Create(time(NULL)),
         .listener     = Listener_Create(),
@@ -131,41 +129,32 @@ bool Simulation_Step(Simulation* const simulation)
 {
     assert(simulation);
 
-    if (Queue_IsEmpty(simulation->event_queue))
+    if (simulation->current_time > simulation->max_time)
         return false;
 
     Event* const e = Queue_Dequeue(simulation->event_queue);
-    simulation->current_time = e->time;
 
-    if (simulation->current_time > simulation->max_time)
-    {
-        Event_Destroy(e);
-
-        if (simulation->listener)
-            Listener_OnFinish(simulation->listener);
-
+    if (!e)
         return false;
-    }
 
+    simulation->current_time = e->time;
     ++simulation->step_counter;
-    const char* log_message = NULL;
 
     switch (e->type)
     {
         case ARRIVAL:
 
-            Request* const r = Source_GenerateRequest(e->source, simulation->current_time);
+            Request* const request = Source_GenerateRequest(e->source, simulation->current_time);
+            Device*  const device  = Dispatcher_SelectDevice(simulation->devices);
 
-            if (!Buffer_Add(simulation->buffer, r))
+            if (device)
             {
-                log_message = "Заявка от источника %" PRId32 " -> ОТКАЗ (буфер полон)\n";
-                Request_Destroy(r);
-                break;
+                const double service_time = -log(1 - MT19937_RandRange(&simulation->random, 0, 1) / simulation->service_rate);
+                Device_StartService(device, request, simulation->current_time, service_time);
+                Queue_Enqueue(simulation->event_queue, Event_Create(RELEASE, simulation->current_time + (TimeMoment)service_time, NULL, device));
             }
-            
-            log_message = "Заявка от источника %" PRId32 " -> буфер размера %zu\n";
-            const TimeMoment next_time = simulation->current_time + (TimeMoment)Source_NextArrivalInterval(e->source);
-            Queue_Enqueue(simulation->event_queue, Event_Create(ARRIVAL, next_time, e->source, NULL));
+            else
+                Request_Destroy(Buffer_Add(simulation->buffer, request));
 
             break;
 
@@ -173,8 +162,6 @@ bool Simulation_Step(Simulation* const simulation)
 
             Device*  const d        = e->device;
             Request* const finished = Device_FinishService(d);
-
-            log_message = "Прибор %" PRId32 " освободился, завершил заявку от источника %" PRId32 "\n";
 
             Request_Destroy(finished);
 
@@ -185,22 +172,6 @@ bool Simulation_Step(Simulation* const simulation)
     }
 
     Event_Destroy(e);
-
-    if (Buffer_IsEmpty(simulation->buffer))
-    {
-        Device* const free = Dispatcher_SelectDevice(&simulation->dispatcher, simulation->devices);
-
-        if (free)
-        {
-            Request* const r = Buffer_Poll(simulation->buffer);
-            double service_time = -log(1 - MT19937_RandRange(&simulation->random, 0, 1) / simulation->service_rate);
-            Device_StartService(free, r, simulation->current_time, service_time);
-            Queue_Enqueue(simulation->event_queue, Event_Create(RELEASE, simulation->current_time + (TimeMoment)service_time, NULL, free));
-        }
-    }
-
-    if (simulation->listener)
-        Listener_OnStep(simulation->listener, simulation->step_counter, simulation->current_time, log_message, simulation->devices, simulation->buffer);
 
     return true;
 }

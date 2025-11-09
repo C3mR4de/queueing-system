@@ -9,7 +9,7 @@ typedef struct Buffer Buffer;
 Buffer* Buffer_Create(size_t capacity);
 void    Buffer_Destroy(Buffer* buffer);
 
-bool  Buffer_Add(Buffer* buffer, void* element);
+void* Buffer_Add(Buffer* buffer, void* element);
 void* Buffer_Poll(Buffer* buffer);
 bool  Buffer_IsEmpty(const Buffer* buffer);
 bool  Buffer_Size(const Buffer* buffer);

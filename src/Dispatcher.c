@@ -1,26 +1,16 @@
 #include "Dispatcher.h"
 #include <assert.h>
 
-Dispatcher Dispatcher_Create(void)
+Device* Dispatcher_SelectDevice(Vector* devices)
 {
-    return (Dispatcher) { .last_used_device_index = -1 };
-}
-
-Device* Dispatcher_SelectDevice(Dispatcher* dispatcher, Vector* devices)
-{
-    assert(dispatcher);
-
     const size_t n = Vector_Size(devices);
 
-    for (size_t i = 1; i <= n; ++i)
+    for (size_t i = 0; i < n; ++i)
     {
-        size_t index = (dispatcher->last_used_device_index + i) % n;
+        Device* const device = Vector_Get(devices, i);
 
-        if (!Device_IsBusy(Vector_Get(devices, index)))
-        {
-            dispatcher->last_used_device_index = index;
-            return Vector_Get(devices, index);
-        }
+        if (!Device_IsBusy(device))
+            return device;
     }
 
     return NULL;

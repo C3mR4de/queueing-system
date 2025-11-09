@@ -42,7 +42,7 @@ void Buffer_Destroy(Buffer* const buffer)
     free(buffer);
 }
 
-bool Buffer_Add(Buffer* const buffer, void* const element)
+void* Buffer_Add(Buffer* const buffer, void* const element)
 {
     assert(buffer);
     assert(element);
@@ -58,10 +58,12 @@ bool Buffer_Add(Buffer* const buffer, void* const element)
     if (counter < buffer->capacity)
     {
         buffer->data[buffer->add_pos] = element;
-        return true;
+        return NULL;
     }
 
-    return false;
+    void* denied_element = buffer->data[buffer->add_pos];
+    buffer->data[buffer->add_pos] = element;
+    return denied_element;
 }
 
 void* Buffer_Poll(Buffer* const buffer)
