@@ -8,27 +8,23 @@ struct PriorityQueue
     Comparator comparator;
     size_t     size;
     size_t     capacity;
-    size_t     head;
-    size_t     tail;
 };
 
 PriorityQueue* PriorityQueue_Create(const size_t capacity, const Comparator comparator)
 {
+    assert(comparator);
+
     PriorityQueue* const queue = malloc(sizeof(PriorityQueue));
 
     if (!queue)
         return NULL;
 
-    const size_t real_capacity = capacity + 1;
-
     *queue = (PriorityQueue)
     {
-        .data       = malloc(real_capacity * sizeof(void*)),
+        .data       = calloc(1, capacity * sizeof(void*)),
         .comparator = comparator, 
         .size       = 0,
-        .capacity   = real_capacity,
-        .head       = 0,
-        .tail       = 0
+        .capacity   = capacity,
     };
 
     if (queue->data)
@@ -51,26 +47,40 @@ bool PriorityQueue_Enqueue(PriorityQueue* const queue, void* const element)
     assert(queue);
     assert(element);
 
-    if ((queue->tail + 1) % queue->capacity == queue->head)
-        return false;
-    
-    queue->data[queue->tail] = element;
-    queue->tail = (queue->tail + 1) % queue->capacity;
-    ++queue->size;
+    for (size_t i = 0; i < queue->capacity; ++i)
+    {
+        if (!queue->data[i])
+        {
+            queue->data[i] = element;
+            ++queue->size;
+            return true;
+        }
+    }
 
-    return true;
+    return false;
 }
 
 void* PriorityQueue_Dequeue(PriorityQueue* const queue)
 {
     assert(queue);
 
-    if (PriorityQueue_IsEmpty(queue))
-        return NULL;
+    void*  res   = NULL;
+    size_t index = 0;
 
-    void* const res = queue->data[queue->head];
-    queue->head = (queue->head + 1) % queue->capacity;
-    --queue->size;
+    for (size_t i = 0; i < queue->capacity; ++i)
+    {
+        if (queue->comparator(queue->data[i], res))
+        {
+            res   = queue->data[i];
+            index = i;
+        }
+    }
+
+    if (res)
+    {
+        queue->data[index] = NULL;
+        --queue->size;
+    }
 
     return res;
 }
@@ -78,7 +88,7 @@ void* PriorityQueue_Dequeue(PriorityQueue* const queue)
 bool PriorityQueue_IsEmpty(const PriorityQueue* const queue)
 {
     assert(queue);
-    return queue->head == queue->tail;
+    return queue->size == 0;
 }
 
 size_t PriorityQueue_Size(const PriorityQueue* const queue)

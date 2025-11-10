@@ -26,6 +26,12 @@ struct Simulation
 
 static bool __Simulation_CompareEvents(const void* const lhs, const void* const rhs)
 {
+    if (!lhs)
+        return false;
+
+    if (!rhs)
+        return true;
+
     return ((Event*)lhs)->time < ((Event*)rhs)->time;
 }
 
