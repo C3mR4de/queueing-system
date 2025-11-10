@@ -7,22 +7,27 @@
 #include <time.h>
 #include "Listener.h"
 #include "Event.h"
-#include "Queue.h"
+#include "PriorityQueue.h"
 
 struct Simulation
 {
-    Vector*    sources;
-    Vector*    devices;
-    Buffer*    buffer;
-    Queue*     event_queue;
-    MT19937    random;
-    Listener*  listener;
+    Vector*        sources;
+    Vector*        devices;
+    Buffer*        buffer;
+    PriorityQueue* event_queue;
+    MT19937        random;
+    Listener*      listener;
 
     size_t     step_counter;
     TimeMoment current_time;
     TimeMoment max_time;
     double     service_rate;
 };
+
+static bool __Simulation_CompareEvents(const void* const lhs, const void* const rhs)
+{
+    return ((Event*)lhs)->time < ((Event*)rhs)->time;
+}
 
 Simulation* Simulation_Create(const size_t num_sources,
                               const size_t num_devices,
@@ -42,7 +47,7 @@ Simulation* Simulation_Create(const size_t num_sources,
         .sources      = Vector_Create(num_sources),
         .devices      = Vector_Create(num_devices),
         .buffer       = Buffer_Create(buffer_size),
-        .event_queue  = Queue_Create(num_sources),
+        .event_queue  = PriorityQueue_Create(num_sources, __Simulation_CompareEvents),
         .random       = MT19937_Create(time(NULL)),
         .listener     = Listener_Create(),
         .step_counter = 0,
@@ -78,7 +83,7 @@ Simulation* Simulation_Create(const size_t num_sources,
     {
         Source*    const s = Vector_Get(tmp.sources, i);
         TimeMoment const t = (TimeMoment)Source_NextArrivalInterval(s);
-        Queue_Enqueue(tmp.event_queue, Event_Create(ARRIVAL, t, s, NULL));
+        PriorityQueue_Enqueue(tmp.event_queue, Event_Create(ARRIVAL, t, s, NULL));
     }
 
     memcpy(simulation, &tmp, sizeof(Simulation));
@@ -96,10 +101,10 @@ void Simulation_Destroy(Simulation* const simulation)
 
     free(simulation->listener);
 
-    while (!Queue_IsEmpty(simulation->event_queue))
-        Event_Destroy(Queue_Dequeue(simulation->event_queue));
+    while (!PriorityQueue_IsEmpty(simulation->event_queue))
+        Event_Destroy(PriorityQueue_Dequeue(simulation->event_queue));
 
-    Queue_Destroy(simulation->event_queue);
+    PriorityQueue_Destroy(simulation->event_queue);
 
     while (!Buffer_IsEmpty(simulation->buffer))
         Request_Destroy(Buffer_Poll(simulation->buffer));
@@ -132,7 +137,7 @@ bool Simulation_Step(Simulation* const simulation)
     if (simulation->current_time > simulation->max_time)
         return false;
 
-    Event* const e = Queue_Dequeue(simulation->event_queue);
+    Event* const e = PriorityQueue_Dequeue(simulation->event_queue);
 
     if (!e)
         return false;
@@ -151,7 +156,7 @@ bool Simulation_Step(Simulation* const simulation)
             {
                 const double service_time = -log(1 - MT19937_RandRange(&simulation->random, 0, 1) / simulation->service_rate);
                 Device_StartService(device, request, simulation->current_time, service_time);
-                Queue_Enqueue(simulation->event_queue, Event_Create(RELEASE, simulation->current_time + (TimeMoment)service_time, NULL, device));
+                PriorityQueue_Enqueue(simulation->event_queue, Event_Create(RELEASE, simulation->current_time + (TimeMoment)service_time, NULL, device));
             }
             else
                 Request_Destroy(Buffer_Add(simulation->buffer, request));

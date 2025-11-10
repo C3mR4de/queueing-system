@@ -3,22 +3,24 @@
 
 #include <stddef.h>
 #include <stdbool.h>
+#include "CommonTypedefs.h"
 
-typedef struct Queue Queue;
+typedef struct PriorityQueue PriorityQueue;
 
 /// \brief Создаёт очередь с приоритетом в динамической памяти.
 ///
-/// \param[in] capacity Размер очереди с приоритетом
+/// \param[in] capacity   Размер очереди с приоритетом
+/// \param[in] comparator Функция-компаратор, определяющая более приоритетный элемент
 ///
 /// \return Дескриптор очереди с приоритетом (NULL в случае неудачи)
 ///
-Queue* Queue_Create(size_t capacity);
+PriorityQueue* PriorityQueue_Create(size_t capacity, Comparator comparator);
 
 /// \brief Удаляет очередь с приоритетом из динамической памяти.
 ///
 /// \param[in] buffer Дескриптор очереди с приоритетом
 ///
-void Queue_Destroy(Queue* queue);
+void PriorityQueue_Destroy(PriorityQueue* queue);
 
 /// \brief Пытается добавить элемент в очередь с приоритетом.
 ///
@@ -27,7 +29,7 @@ void Queue_Destroy(Queue* queue);
 ///
 /// \return true, если удалось добавить элемент, false в противном случае
 ///
-bool Queue_Enqueue(Queue* queue, void* element);
+bool PriorityQueue_Enqueue(PriorityQueue* queue, void* element);
 
 /// \brief Пытается удалить элемент из очереди с приоритетом.
 ///
@@ -36,7 +38,7 @@ bool Queue_Enqueue(Queue* queue, void* element);
 ///
 /// \return Удалённый элемент (NULL в случае, если очередь пустая)
 ///
-void* Queue_Dequeue(Queue* queue);
+void* PriorityQueue_Dequeue(PriorityQueue* queue);
 
 /// \brief Проверяет, является ли очередь с приоритетом пустой.
 ///
@@ -44,7 +46,7 @@ void* Queue_Dequeue(Queue* queue);
 ///
 /// \return true, если очередь с приоритетом пустая, false в противном случае
 ///
-bool Queue_IsEmpty(const Queue* queue);
+bool PriorityQueue_IsEmpty(const PriorityQueue* queue);
 
 /// \brief Возвращает количество элементов в очереди с приоритетом.
 ///
@@ -52,6 +54,6 @@ bool Queue_IsEmpty(const Queue* queue);
 ///
 /// \return Количество элементов в очереди с приоритетом
 ///
-size_t Queue_Size(const Queue* queue);
+size_t PriorityQueue_Size(const PriorityQueue* queue);
 
 #endif
