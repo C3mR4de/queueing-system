@@ -44,13 +44,12 @@ void* Vector_Get(const Vector* const vector, const size_t index)
     return vector->data[index];
 }
 
-bool Vector_Set(Vector* const vector, const size_t index, void* const element)
+void Vector_Set(Vector* const vector, const size_t index, void* const element)
 {
     assert(vector);
     assert(index < vector->size);
 
     vector->data[index] = element;
-    return true;
 }
 
 size_t Vector_Size(const Vector* const vector)

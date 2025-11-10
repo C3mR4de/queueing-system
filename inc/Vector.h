@@ -34,9 +34,7 @@ void* Vector_Get(const Vector* vector, size_t index);
 /// \param[in] vector  Дескриптор вектора
 /// \param[in] element Добавляемый элемент
 ///
-/// \return true, если удалось добавить элемент, false в противном случае
-///
-bool Vector_Set(Vector* vector, size_t index, void* element);
+void Vector_Set(Vector* vector, size_t index, void* element);
 
 /// \brief Возвращает количество элементов в векторе.
 ///
