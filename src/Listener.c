@@ -23,7 +23,7 @@ void Listener_OnStep(Listener* const listener, const size_t step, const TimeMome
     (void)listener;
     (void)devices;
     (void)buffer;
-    printf("Шаг %zu (t = %" PRId32 "): %s\n", step, time, message);
+    printf("Шаг %zu (t = %" PRIdMAX "): %s\n", step, time, message);
 }
 
 void Listener_OnFinish(Listener* const listener)
