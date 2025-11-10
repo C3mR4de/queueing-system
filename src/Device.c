@@ -28,6 +28,12 @@ void Device_Destroy(Device* const device)
     free(device);
 }
 
+ID Device_GetID(const Device* const device)
+{
+    assert(device);
+    return device->id;
+}
+
 void Device_StartService(Device* const device, Request* const request, const TimeMoment current_time, const double service_time)
 {
     assert(device);

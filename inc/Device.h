@@ -20,6 +20,14 @@ Device* Device_Create(ID id);
 ///
 void Device_Destroy(Device* device);
 
+/// \brief Возвращает ID прибора.
+///
+/// \param[in] device Дескриптор прибора
+///
+/// \return ID прибора
+///
+ID Device_GetID(const Device* device);
+
 /// \brief Начинает обслуживание заявки на приборе.
 ///
 /// \param[in] device       Дескриптор прибора

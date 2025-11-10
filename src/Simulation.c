@@ -54,8 +54,8 @@ Simulation* Simulation_Create(const size_t num_sources,
         .sources      = Vector_Create(num_sources),
         .devices      = Vector_Create(num_devices),
         .buffer       = Buffer_Create(buffer_size),
-        .event_queue  = PriorityQueue_Create(3 * num_sources, __Simulation_CompareEvents),
-        .random       = MT19937_Create(time(NULL)),
+        .event_queue  = PriorityQueue_Create(10 * num_sources, __Simulation_CompareEvents),
+        .random       = MT19937_Create(time(NULL) / 4),
         .listener     = Listener_Create(),
         .step_counter = 0,
         .current_time = 0,
@@ -90,7 +90,9 @@ Simulation* Simulation_Create(const size_t num_sources,
     {
         Source*    const s = Vector_Get(tmp.sources, i);
         TimeMoment const t = (TimeMoment)Source_NextArrivalInterval(s);
-        PriorityQueue_Enqueue(tmp.event_queue, Event_Create(ARRIVAL, t, s, NULL));
+
+        for (size_t i = 0; i < 5; ++i)
+            PriorityQueue_Enqueue(tmp.event_queue, Event_Create(ARRIVAL, t, s, NULL));
     }
 
     memcpy(simulation, &tmp, sizeof(Simulation));
@@ -161,12 +163,12 @@ bool Simulation_Step(Simulation* const simulation)
 
             if (device)
             {
-                const double service_time = -log(1 - MT19937_RandRange(&simulation->random, 0, 1) / simulation->service_rate);
+                const double service_time = -log((1 - MT19937_RandRange(&simulation->random, 0, 1)) / simulation->service_rate);
 
                 Device_StartService(device, request, simulation->current_time, service_time);
                 PriorityQueue_Enqueue(simulation->event_queue, Event_Create(RELEASE, simulation->current_time + (TimeMoment)service_time, NULL, device));
 
-                printf("t = %" PRIdMAX ": Начало обслуживания заявки на приборе с ID %" PRIuMAX "\n", simulation->current_time, request->source_id);
+                printf("t = %" PRIdMAX ": Начало обслуживания заявки на приборе №%" PRIuMAX "\n", simulation->current_time, Device_GetID(device));
             }
             else
             {
@@ -182,7 +184,7 @@ bool Simulation_Step(Simulation* const simulation)
             Request* const finished = Device_FinishService(d);
 
             Request_Destroy(finished);
-            printf("t = %" PRIdMAX ": Освобождён прибор с ID %" PRIuMAX "\n", simulation->current_time, finished->source_id);
+            printf("t = %" PRIdMAX ": Освобождён прибор №%" PRIuMAX "\n", simulation->current_time, Device_GetID(device));
 
             break;
 
