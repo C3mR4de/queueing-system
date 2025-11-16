@@ -41,6 +41,15 @@ void* Buffer_Add(Buffer* buffer, void* element);
 ///
 void* Buffer_Poll(Buffer* buffer);
 
+/// \brief Возвращает элемент из буфера.
+///
+/// \param[in] buffer Дескриптор буфера
+/// \param[in] index  Индекс элемента в буфере
+///
+/// \return Элемент буферв
+///
+void* Buffer_Get(const Buffer* buffer, size_t index);
+
 /// \brief Проверяет, является ли буфер пустым.
 ///
 /// \param[in] buffer Дескриптор буфера

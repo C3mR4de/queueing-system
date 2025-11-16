@@ -6,7 +6,6 @@
 #include "Device.h"
 #include "Buffer.h"
 #include "Dispatcher.h"
-#include "Listener.h"
 #include "MT19937.h"
 
 typedef struct Simulation Simulation;
@@ -30,6 +29,11 @@ Simulation* Simulation_Create(size_t num_sources,
                               double max_interval,
                               double service_rate,
                               TimeMoment max_time);
+
+/// \brief Удаляет симуляцию в динамической памяти.
+///
+/// \param[in] simulation Дескриптор симуляции
+///
 void Simulation_Destroy(Simulation* Simulation);
 
 /// \brief Делает шаг в симуляции от текущего особого события к следующему.
@@ -37,5 +41,17 @@ void Simulation_Destroy(Simulation* Simulation);
 /// \return false, если симуляция окончена, true в противном случае
 ///
 bool Simulation_Step(Simulation* simulation);
+
+/// \brief Возвращает вектор приборов.
+///
+/// \return Вектор приборов
+///
+Vector* Simulation_GetDevices(const Simulation* simulation);
+
+/// \brief Возвращает буфер заявок.
+///
+/// \return Буфер заявок
+///
+Buffer* Simulation_GetBuffer(const Simulation* simulation);
 
 #endif

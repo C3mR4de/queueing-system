@@ -1,33 +1,37 @@
 #include "Listener.h"
 #include <stdio.h>
-#include <stdlib.h>
 #include <inttypes.h>
+#include <assert.h>
 
-struct Listener
+void Listener_PrintState(const Simulation* const simulation)
 {
-    int a;
-};
+    assert(simulation);
 
-Listener* Listener_Create(void)
-{
-    return malloc(sizeof(Listener));
-}
+    const Vector* const devices = Simulation_GetDevices(simulation);
 
-void Listener_Destroy(Listener* const listener)
-{
-    free(listener);
-}
+    for (size_t i = 0; i < Vector_Size(devices); ++i)
+    {
+        const Device* const device       = Vector_Get(devices, i);
+        const ID            id           = Device_GetID(device);
+        const TimeMoment    release_time = Device_GetPlannedReleaseTime(device);
 
-void Listener_OnStep(Listener* const listener, const size_t step, const TimeMoment time, const char* message, Vector* const devices, const Buffer* const buffer)
-{
-    (void)listener;
-    (void)devices;
-    (void)buffer;
-    printf("Шаг %zu (t = %" PRIdMAX "): %s\n", step, time, message);
-}
+        if (release_time != -1)
+            printf("Прибор №%" PRIuMAX ": время освобождения t = %" PRIdMAX "\n", id, release_time);
+        else
+            printf("Прибор №%" PRIuMAX ": свободен\n", id);
+    }
 
-void Listener_OnFinish(Listener* const listener)
-{
-    (void)listener;
-    puts("=== Моделирование завершено ===");
+    const Buffer* const buffer = Simulation_GetBuffer(simulation);
+
+    for (size_t i = 0; i < 2; ++i)
+    {
+        const Request* const request = Buffer_Get(buffer, i);
+
+        if (!request)
+            printf("Элемент буфера №%zu: пустой\n", i);
+        else
+            printf("Элемент буфера №%zu: время прибытия заявки = %" PRIdMAX "\n", i, request->arrival_time);
+    }
+
+    puts("");
 }

@@ -12,12 +12,11 @@
 
 struct Simulation
 {
-    Vector*        sources;
-    Vector*        devices;
-    Buffer*        buffer;
-    PriorityQueue* event_queue;
-    MT19937        random;
-    Listener*      listener;
+    Vector*        const sources;
+    Vector*        const devices;
+    Buffer*        const buffer;
+    PriorityQueue* const event_queue;
+    MT19937              random;
 
     size_t     step_counter;
     TimeMoment current_time;
@@ -35,6 +34,8 @@ static bool __Simulation_CompareEvents(const void* const lhs, const void* const 
 
     return ((Event*)lhs)->time < ((Event*)rhs)->time;
 }
+
+#define SOURCE_REQUESTS_COUNT 7ULL
 
 Simulation* Simulation_Create(const size_t num_sources,
                               const size_t num_devices,
@@ -56,19 +57,18 @@ Simulation* Simulation_Create(const size_t num_sources,
         .buffer       = Buffer_Create(buffer_size),
         .event_queue  = PriorityQueue_Create(10 * num_sources, __Simulation_CompareEvents),
         .random       = MT19937_Create(time(NULL) / 4),
-        .listener     = Listener_Create(),
         .step_counter = 0,
         .current_time = 0,
         .max_time     = max_time,
         .service_rate = service_rate,
     };
 
-    if (!(tmp.sources && tmp.devices && tmp.buffer && tmp.event_queue && tmp.listener))
+    if (!(tmp.sources && tmp.devices && tmp.buffer && tmp.event_queue))
         goto cleanup;
 
     for (size_t i = 0; i < num_sources; ++i)
     {
-        Source* const add_source = Source_Create(i, min_interval, max_interval);
+        Source* const add_source = Source_Create(i + 1, min_interval, max_interval);
 
         if (!add_source)
             goto cleanup;
@@ -78,7 +78,7 @@ Simulation* Simulation_Create(const size_t num_sources,
 
     for (size_t i = 0; i < num_devices; ++i)
     {
-        Device* const add_device = Device_Create(i);
+        Device* const add_device = Device_Create(i + 1);
 
         if (!add_device)
             goto cleanup;
@@ -86,14 +86,25 @@ Simulation* Simulation_Create(const size_t num_sources,
         Vector_Set(tmp.devices, i, add_device);
     }
 
+    TimeMoment latest_moment[SOURCE_REQUESTS_COUNT];
+    memset(latest_moment, 0, sizeof(latest_moment));
+
     for (size_t i = 0; i < num_sources; ++i)
     {
-        Source*    const s = Vector_Get(tmp.sources, i);
-        TimeMoment const t = (TimeMoment)Source_NextArrivalInterval(s);
+        Source* const s = Vector_Get(tmp.sources, i);
 
-        for (size_t i = 0; i < 5; ++i)
+        for (size_t j = 0; j < SOURCE_REQUESTS_COUNT; ++j)
+        {
+            latest_moment[i] += (TimeMoment)Source_NextArrivalInterval(s);
+            TimeMoment const t = latest_moment[i];
+
+            printf("Генерация заявки на источнике №%zu... Время %" PRIdMAX "\n", i, t);
+
             PriorityQueue_Enqueue(tmp.event_queue, Event_Create(ARRIVAL, t, s, NULL));
+        }
     }
+
+    puts("");
 
     memcpy(simulation, &tmp, sizeof(Simulation));
     return simulation;
@@ -107,8 +118,6 @@ cleanup:
 void Simulation_Destroy(Simulation* const simulation)
 {
     assert(simulation);
-
-    free(simulation->listener);
 
     while (!PriorityQueue_IsEmpty(simulation->event_queue))
         Event_Destroy(PriorityQueue_Dequeue(simulation->event_queue));
@@ -154,38 +163,62 @@ bool Simulation_Step(Simulation* const simulation)
     simulation->current_time = e->time;
     ++simulation->step_counter;
 
+    printf("Шаг №%zu\n", simulation->step_counter);
+
     switch (e->type)
     {
         case ARRIVAL:
-
-            Request* const request = Source_GenerateRequest(e->source, simulation->current_time);
-            Device*  const device  = Dispatcher_SelectDevice(simulation->devices);
-
-            if (device)
             {
-                const double service_time = -log((1 - MT19937_RandRange(&simulation->random, 0, 1)) / simulation->service_rate);
+                Request* const request = Source_GenerateRequest(e->source, simulation->current_time);
+                Device*  const device  = Dispatcher_SelectDevice(simulation->devices);
 
-                Device_StartService(device, request, simulation->current_time, service_time);
-                PriorityQueue_Enqueue(simulation->event_queue, Event_Create(RELEASE, simulation->current_time + (TimeMoment)service_time, NULL, device));
+                if (device)
+                {
+                    const TimeMoment service_time = MT19937_RandRange(&simulation->random, 30, 40);
 
-                printf("t = %" PRIdMAX ": Начало обслуживания заявки на приборе №%" PRIuMAX "\n", simulation->current_time, Device_GetID(device));
+                    Device_StartService(device, request, simulation->current_time, service_time);
+                    PriorityQueue_Enqueue(simulation->event_queue, Event_Create(RELEASE, simulation->current_time + service_time, NULL, device));
+
+                    printf("t = %" PRIdMAX ": Начало обслуживания заявки с источника №%" PRIuMAX " на приборе №%" PRIuMAX "\n", simulation->current_time, request->source_id, Device_GetID(device));
+                    printf("Длительность обслуживания t = %" PRIdMAX "\n", service_time);
+                }
+                else
+                {
+                    printf("t = %" PRIdMAX ": Постановка в буфер заявки c источника №%" PRIuMAX "\n", simulation->current_time, request->source_id);
+
+                    Request* const denied_request = Buffer_Add(simulation->buffer, request);
+                    
+                    if (denied_request)
+                    {
+                        printf("Отказано заявке с временем поступления в буфер t = %" PRIdMAX "\n", denied_request->arrival_time);
+                        Request_Destroy(denied_request);
+                    }
+                }
             }
-            else
-            {
-                Request_Destroy(Buffer_Add(simulation->buffer, request));
-                printf("t = %" PRIdMAX ": ОТКАЗ\n", simulation->current_time);
-            }
-
             break;
 
         case RELEASE:
+            {
+                Device*  const d        = e->device;
+                Request* const finished = Device_FinishService(d);
 
-            Device*  const d        = e->device;
-            Request* const finished = Device_FinishService(d);
+                Request_Destroy(finished);
 
-            Request_Destroy(finished);
-            printf("t = %" PRIdMAX ": Освобождён прибор №%" PRIuMAX "\n", simulation->current_time, Device_GetID(device));
+                Request* from_buffer = Buffer_Poll(simulation->buffer);
 
+                if (from_buffer)
+                {
+                    const TimeMoment service_time = MT19937_RandRange(&simulation->random, 5, 20);
+
+                    Device_StartService(d, from_buffer, simulation->current_time, service_time);
+                    PriorityQueue_Enqueue(simulation->event_queue, Event_Create(RELEASE, simulation->current_time + service_time, NULL, d));
+
+                    printf("t = %" PRIdMAX ": Начало обслуживания заявки из буфера с источника №%" PRIuMAX " на приборе №%" PRIuMAX "\n", simulation->current_time, from_buffer->source_id, Device_GetID(d));
+                    printf("Длительность обслуживания t = %" PRIdMAX "\n", service_time);
+                }
+                else
+                    printf("t = %" PRIdMAX ": Освобождён и отправлен в простой прибор №%" PRIuMAX "\n", simulation->current_time, Device_GetID(d));
+            }
             break;
 
         default:
@@ -193,6 +226,19 @@ bool Simulation_Step(Simulation* const simulation)
     }
 
     Event_Destroy(e);
+    Listener_PrintState(simulation);
 
     return true;
+}
+
+Vector* Simulation_GetDevices(const Simulation* const simulation)
+{
+    assert(simulation);
+    return simulation->devices;
+}
+
+Buffer* Simulation_GetBuffer(const Simulation* const simulation)
+{
+    assert(simulation);
+    return simulation->buffer;
 }

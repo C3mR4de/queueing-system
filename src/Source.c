@@ -15,6 +15,8 @@ struct Source
 
 Source* Source_Create(const ID id, const double min_interval, const double max_interval)
 {
+    assert(min_interval < max_interval);
+
     Source* const source = malloc(sizeof(Source));
 
     if (!source)

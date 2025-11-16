@@ -61,7 +61,7 @@ void* Buffer_Add(Buffer* const buffer, void* const element)
         return NULL;
     }
 
-    void* denied_element = buffer->data[buffer->add_pos];
+    void* const denied_element = buffer->data[buffer->add_pos];
     buffer->data[buffer->add_pos] = element;
     return denied_element;
 }
@@ -87,6 +87,12 @@ void* Buffer_Poll(Buffer* const buffer)
     }
 
     return NULL;
+}
+
+void* Buffer_Get(const Buffer* buffer, const size_t index)
+{
+    assert(buffer);
+    return buffer->data[index];
 }
 
 bool Buffer_IsEmpty(const Buffer* const buffer)
