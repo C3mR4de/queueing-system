@@ -213,7 +213,7 @@ bool Simulation_Step(Simulation* const simulation)
                     Device_StartService(d, from_buffer, simulation->current_time, service_time);
                     PriorityQueue_Enqueue(simulation->event_queue, Event_Create(RELEASE, simulation->current_time + service_time, NULL, d));
 
-                    printf("t = %" PRIdMAX ": Начало обслуживания заявки из буфера с источника №%" PRIuMAX " на приборе №%" PRIuMAX "\n", simulation->current_time, from_buffer->source_id, Device_GetID(d));
+                    printf("t = %" PRIdMAX ": Начало обслуживания заявки из буфера на приборе №%" PRIuMAX "\n", simulation->current_time, Device_GetID(d));
                     printf("Длительность обслуживания t = %" PRIdMAX "\n", service_time);
                 }
                 else
