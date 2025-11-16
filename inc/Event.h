@@ -4,27 +4,31 @@
 #include "Source.h"
 #include "Device.h"
 
-typedef enum { ARRIVAL, RELEASE } Type;
+typedef enum { ARRIVAL, RELEASE } EventType;
+typedef union
+{
+    Source* source;
+    Device* device;
+}
+EventRelative;
 
 typedef struct 
 {
-    Type       const type;
-    TimeMoment const time;
-    Source*    const source;
-    Device*    const device;
+    EventType     const type;
+    TimeMoment    const time;
+    EventRelative const relative;
 }
 Event;
 
 /// \brief Создаёт особое событие в динамической памяти.
 ///
-/// \param[in] type   Тип особого события - поступление заявки (ARRIVAL) или освобождение прибора (RELEASE)
-/// \param[in] time   Момент времени особого события
-/// \param[in] source Источник заявки (если type == ARRIVAL, иначе NULL)
-/// \param[in] device Освобождаемый прибор (если type == RELEASE, иначе NULL)
+/// \param[in] type     Тип особого события - поступление заявки (ARRIVAL) или освобождение прибора (RELEASE)
+/// \param[in] time     Момент времени особого события
+/// \param[in] relative Если type == ARRIVAL, источник заявки, если type == RELEASE, освобождаемый прибор
 ///
 /// \return Дескриптор особого события
 ///
-Event* Event_Create(Type type, TimeMoment time, Source* source, Device* device);
+Event* Event_Create(EventType type, TimeMoment time, EventRelative relative);
 
 /// \brief Удаляет особое событие из динамической памяти.
 ///
