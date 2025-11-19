@@ -45,7 +45,7 @@ Request* Source_GenerateRequest(const Source* const source, const TimeMoment cur
     return Request_Create(source->id, current_time);
 }
 
-double Source_NextArrivalInterval(Source* const source)
+double Source_GenerateArrivalInterval(Source* const source)
 {
     assert(source);
     return source->min_interval + (source->max_interval - source->min_interval) * MT19937_RandRange(&source->random, 0, 1);

@@ -95,7 +95,7 @@ Simulation* Simulation_Create(const size_t num_sources,
 
         for (size_t j = 0; j < SOURCE_REQUESTS_COUNT; ++j)
         {
-            latest_moment[i] += (TimeMoment)Source_NextArrivalInterval(s);
+            latest_moment[i] += (TimeMoment)Source_GenerateArrivalInterval(s);
             TimeMoment const t = latest_moment[i];
 
             printf("Генерация заявки на источнике №%zu... Время %" PRIdMAX "\n", i, t);

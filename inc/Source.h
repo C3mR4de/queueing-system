@@ -26,11 +26,18 @@ void Source_Destroy(Source* source);
 /// \brief Генерирует заявку.
 ///
 /// \param[in] source       Дескриптор источника
-/// \param[in] current_time Момент генерации заявка
+/// \param[in] current_time Момент генерации заявки
 ///
 /// \return Дескриптор сгенерированной заявки
 ///
 Request* Source_GenerateRequest(const Source* source, TimeMoment current_time);
-double   Source_NextArrivalInterval(Source* source);
+
+/// \brief Генерирует интервал прибытия заявки.
+///
+/// \param[in] source Дескриптор источника
+///
+/// \return Интервал прибытия заявки
+///
+double Source_GenerateArrivalInterval(Source* source);
 
 #endif
