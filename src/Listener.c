@@ -15,6 +15,20 @@ void Listener_PrintState(const Simulation* const simulation)
     else
         printf("Следующее особое событие: конец симуляции\n");
 
+    const Vector* const sources = Simulation_GetSources(simulation);
+
+    for (size_t i = 0; i < Vector_Size(sources); ++i)
+    {
+        const Source* const source       = Vector_Get(sources, i);
+        const ID            id           = Source_GetID(source);
+        const TimeMoment    next_request = Source_GetNextRequestArrivalTime(source);
+    
+        if (next_request != -1)
+            printf("Источник №%" PRIuMAX ": время прибытия следующей заявки t = %" PRIdMAX "\n", id, next_request);
+        else
+            printf("Источник №%" PRIuMAX ": заявок больше нет\n", id);
+    }
+
     const Vector* const devices = Simulation_GetDevices(simulation);
 
     for (size_t i = 0; i < Vector_Size(devices); ++i)

@@ -23,6 +23,14 @@ Source* Source_Create(ID id, double min_interval, double max_interval);
 ///
 void Source_Destroy(Source* source);
 
+/// \brief Возвращает ID источника.
+///
+/// \param[in] device Дескриптор источника
+///
+/// \return ID источника
+///
+ID Source_GetID(const Source* device);
+
 /// \brief Генерирует заявку.
 ///
 /// \param[in] source       Дескриптор источника
@@ -39,5 +47,27 @@ Request* Source_GenerateRequest(const Source* source, TimeMoment current_time);
 /// \return Интервал прибытия заявки
 ///
 double Source_GenerateArrivalInterval(Source* source);
+
+/// \brief Добавляет обработанную заявку.
+///
+/// \param[in] source Дескриптор источника
+///
+void Source_ArriveRequest(Source* source);
+
+/// \brief Возвращает массив времён прибытия заявок.
+///
+/// \param[in] source Дескриптор источника
+///
+/// \return Массив времён прибытия заявок
+///
+TimeMoment* Source_GetRequestsArrival(Source* source);
+
+/// \brief Возвращает время прибытия следующей заявки.
+///
+/// \param[in] source Дескриптор источника
+///
+/// \return Время прибытия следующей заявки
+///
+TimeMoment Source_GetNextRequestArrivalTime(const Source* source);
 
 #endif

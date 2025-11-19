@@ -35,8 +35,6 @@ static bool __Simulation_CompareEvents(const void* const lhs, const void* const 
     return ((Event*)lhs)->time < ((Event*)rhs)->time;
 }
 
-#define SOURCE_REQUESTS_COUNT 7ULL
-
 Simulation* Simulation_Create(const size_t num_sources,
                               const size_t num_devices,
                               const size_t buffer_size,
@@ -97,6 +95,7 @@ Simulation* Simulation_Create(const size_t num_sources,
         {
             latest_moment[i] += (TimeMoment)Source_GenerateArrivalInterval(s);
             TimeMoment const t = latest_moment[i];
+            Source_GetRequestsArrival(s)[j] = t;
 
             printf("Генерация заявки на источнике №%zu... Время %" PRIdMAX "\n", i, t);
 
@@ -172,6 +171,8 @@ bool Simulation_Step(Simulation* const simulation)
                 Request* const request = Source_GenerateRequest(e->relative.source, simulation->current_time);
                 Device*  const device  = Dispatcher_SelectDevice(simulation->devices);
 
+                Source_ArriveRequest(e->relative.source);
+
                 if (device)
                 {
                     const TimeMoment service_time = MT19937_RandRange(&simulation->random, 30, 40);
@@ -229,6 +230,12 @@ bool Simulation_Step(Simulation* const simulation)
     Listener_PrintState(simulation);
 
     return true;
+}
+
+const Vector* Simulation_GetSources(const Simulation* simulation)
+{
+    assert(simulation);
+    return simulation->sources;
 }
 
 const Vector* Simulation_GetDevices(const Simulation* const simulation)

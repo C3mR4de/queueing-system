@@ -43,6 +43,12 @@ void Simulation_Destroy(Simulation* Simulation);
 ///
 bool Simulation_Step(Simulation* simulation);
 
+/// \brief Возвращает вектор источников.
+///
+/// \return Вектор источников
+///
+const Vector* Simulation_GetSources(const Simulation* simulation);
+
 /// \brief Возвращает вектор приборов.
 ///
 /// \return Вектор приборов
