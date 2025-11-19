@@ -47,18 +47,18 @@ bool Simulation_Step(Simulation* simulation);
 ///
 /// \return Вектор приборов
 ///
-Vector* Simulation_GetDevices(const Simulation* simulation);
+const Vector* Simulation_GetDevices(const Simulation* simulation);
 
 /// \brief Возвращает буфер заявок.
 ///
 /// \return Буфер заявок
 ///
-Buffer* Simulation_GetBuffer(const Simulation* simulation);
+const Buffer* Simulation_GetBuffer(const Simulation* simulation);
 
 /// \brief Возвращает очередь событий.
 ///
 /// \return Очередь событий
 ///
-PriorityQueue* Simulation_GetEventQueue(const Simulation* simulation);
+const PriorityQueue* Simulation_GetEventQueue(const Simulation* simulation);
 
 #endif

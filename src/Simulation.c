@@ -231,19 +231,19 @@ bool Simulation_Step(Simulation* const simulation)
     return true;
 }
 
-Vector* Simulation_GetDevices(const Simulation* const simulation)
+const Vector* Simulation_GetDevices(const Simulation* const simulation)
 {
     assert(simulation);
     return simulation->devices;
 }
 
-Buffer* Simulation_GetBuffer(const Simulation* const simulation)
+const Buffer* Simulation_GetBuffer(const Simulation* const simulation)
 {
     assert(simulation);
     return simulation->buffer;
 }
 
-PriorityQueue* Simulation_GetEventQueue(const Simulation* simulation)
+const PriorityQueue* Simulation_GetEventQueue(const Simulation* simulation)
 {
     assert(simulation);
     return simulation->event_queue;
