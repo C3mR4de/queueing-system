@@ -85,6 +85,20 @@ void* PriorityQueue_Dequeue(PriorityQueue* const queue)
     return res;
 }
 
+const void* PriorityQueue_Peek(const PriorityQueue* const queue)
+{
+    assert(queue);
+    const void* res = NULL;
+
+    for (size_t i = 0; i < queue->capacity; ++i)
+    {
+        if (queue->comparator(queue->data[i], res))
+            res = queue->data[i];
+    }
+
+    return res;
+}
+
 bool PriorityQueue_IsEmpty(const PriorityQueue* const queue)
 {
     assert(queue);

@@ -2,10 +2,18 @@
 #include <stdio.h>
 #include <inttypes.h>
 #include <assert.h>
+#include "Event.h"
 
 void Listener_PrintState(const Simulation* const simulation)
 {
     assert(simulation);
+
+    const Event* const next_event = PriorityQueue_Peek(Simulation_GetEventQueue(simulation));
+
+    if (next_event)
+        printf("Следующее особое событие: %s в момент времени t = %" PRIdMAX "\n", next_event->type == ARRIVAL ? "прибытие заявки" : "освобождение прибора", next_event->time);
+    else
+        printf("Следующее особое событие: конец симуляции\n");
 
     const Vector* const devices = Simulation_GetDevices(simulation);
 

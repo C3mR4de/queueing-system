@@ -48,7 +48,7 @@ void* Buffer_Poll(Buffer* buffer);
 ///
 /// \return Элемент буферв
 ///
-void* Buffer_Get(const Buffer* buffer, size_t index);
+const void* Buffer_Get(const Buffer* buffer, size_t index);
 
 /// \brief Проверяет, является ли буфер пустым.
 ///

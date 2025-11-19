@@ -89,7 +89,7 @@ void* Buffer_Poll(Buffer* const buffer)
     return NULL;
 }
 
-void* Buffer_Get(const Buffer* buffer, const size_t index)
+const void* Buffer_Get(const Buffer* buffer, const size_t index)
 {
     assert(buffer);
     return buffer->data[index];

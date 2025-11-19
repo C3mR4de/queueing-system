@@ -242,3 +242,9 @@ Buffer* Simulation_GetBuffer(const Simulation* const simulation)
     assert(simulation);
     return simulation->buffer;
 }
+
+PriorityQueue* Simulation_GetEventQueue(const Simulation* simulation)
+{
+    assert(simulation);
+    return simulation->event_queue;
+}

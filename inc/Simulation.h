@@ -7,6 +7,7 @@
 #include "Buffer.h"
 #include "Dispatcher.h"
 #include "MT19937.h"
+#include "PriorityQueue.h"
 
 typedef struct Simulation Simulation;
 
@@ -53,5 +54,11 @@ Vector* Simulation_GetDevices(const Simulation* simulation);
 /// \return Буфер заявок
 ///
 Buffer* Simulation_GetBuffer(const Simulation* simulation);
+
+/// \brief Возвращает очередь событий.
+///
+/// \return Очередь событий
+///
+PriorityQueue* Simulation_GetEventQueue(const Simulation* simulation);
 
 #endif
