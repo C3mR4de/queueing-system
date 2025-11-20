@@ -1,5 +1,5 @@
-#ifndef QUEUE_H
-#define QUEUE_H
+#ifndef PRIORITY_QUEUE_H
+#define PRIORITY_QUEUE_H
 
 #include <stddef.h>
 #include <stdbool.h>
