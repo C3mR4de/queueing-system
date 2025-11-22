@@ -24,7 +24,7 @@ Source* Source_Create(const ID id, const double min_interval, const double max_i
     if (!source)
         return NULL;
 
-    Source tmp = (Source)
+    const Source tmp = (Source)
     {
         .id            = id,
         .random        = MT19937_Create(time(NULL) / (id + 1)),

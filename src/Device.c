@@ -18,7 +18,7 @@ Device* Device_Create(const ID id)
     if (!device)
         return NULL;
     
-    Device tmp = (Device) { .id = id };
+    const Device tmp = (Device) { .id = id };
     memcpy(device, &tmp, sizeof(Device));
     return device;
 }

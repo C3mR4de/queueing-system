@@ -12,7 +12,7 @@
 
 int main()
 {
-    Simulation* simulation = Simulation_Create
+    Simulation* const simulation = Simulation_Create
     (
         NUM_SOURCES,
         NUM_DEVICES,

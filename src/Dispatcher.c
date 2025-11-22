@@ -1,7 +1,7 @@
 #include "Dispatcher.h"
 #include <assert.h>
 
-Device* Dispatcher_SelectDevice(Vector* devices)
+Device* Dispatcher_SelectDevice(Vector* const devices)
 {
     const size_t n = Vector_Size(devices);
 
