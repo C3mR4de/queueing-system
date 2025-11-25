@@ -42,7 +42,7 @@ void PriorityQueue_Destroy(PriorityQueue* const queue)
     free(queue);
 }
 
-bool PriorityQueue_Enqueue(PriorityQueue* const queue, void* const element)
+bool PriorityQueue_Enqueue(PriorityQueue* const restrict queue, void* const restrict element)
 {
     assert(queue);
     assert(element);

@@ -44,7 +44,7 @@ void* Vector_Get(const Vector* const vector, const size_t index)
     return vector->data[index];
 }
 
-void Vector_Set(Vector* const vector, const size_t index, void* const element)
+void Vector_Set(Vector* const restrict vector, const size_t index, void* const restrict element)
 {
     assert(vector);
     assert(index < vector->size);

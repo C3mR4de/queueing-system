@@ -42,7 +42,7 @@ void Buffer_Destroy(Buffer* const buffer)
     free(buffer);
 }
 
-void* Buffer_Add(Buffer* const buffer, void* const element)
+void* Buffer_Add(Buffer* const restrict buffer, void* const restrict element)
 {
     assert(buffer);
     assert(element);
