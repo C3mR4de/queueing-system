@@ -13,7 +13,7 @@ void Listener_PrintState(const Simulation* const simulation)
     if (next_event)
         printf("Следующее особое событие: %s в момент времени t = %" PRIdMAX "\n", next_event->type == ARRIVAL ? "прибытие заявки" : "освобождение прибора", next_event->time);
     else
-        printf("Следующее особое событие: конец симуляции\n");
+        puts("Следующее особое событие: конец симуляции");
 
     const Vector* const sources = Simulation_GetSources(simulation);
 
@@ -56,4 +56,12 @@ void Listener_PrintState(const Simulation* const simulation)
     }
 
     puts("");
+
+    if (!next_event)
+    {
+        puts("================ СТАТИСТИКА ================");
+        printf("Вероятность отказа в обслуживании заявок: %.3f%%\n", Simulation_GetDenyProbability(simulation));
+        printf("Среднее время пребывания заявок в СМО:    %.3f\n",   Simulation_GetAverageQueueingTime(simulation));
+        printf("Коэффициент использования приборов:       %.3f\n",   Simulation_GetDeviceLoadCoefficient(simulation));
+    }
 }

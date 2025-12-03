@@ -22,6 +22,12 @@ struct Simulation
     TimeMoment current_time;
     TimeMoment max_time;
     double     service_rate;
+
+    size_t denied_requests_count;
+    size_t total_requests_count;
+
+    TimeMoment total_queueing_time;
+    TimeMoment total_used_time;
 };
 
 static bool __Simulation_CompareEvents(const void* const lhs, const void* const rhs)
@@ -55,8 +61,6 @@ Simulation* Simulation_Create(const size_t num_sources,
         .buffer       = Buffer_Create(buffer_size),
         .event_queue  = PriorityQueue_Create(10 * num_sources, __Simulation_CompareEvents),
         .random       = MT19937_Create(time(NULL) / 4),
-        .step_counter = 0,
-        .current_time = 0,
         .max_time     = max_time,
         .service_rate = service_rate,
     };
@@ -177,6 +181,9 @@ bool Simulation_Step(Simulation* const simulation)
                 {
                     const TimeMoment service_time = MT19937_RandRange(&simulation->random, 30, 40);
 
+                    simulation->total_queueing_time += service_time;
+                    simulation->total_used_time     += service_time;
+
                     Device_StartService(device, request, simulation->current_time, service_time);
                     PriorityQueue_Enqueue(simulation->event_queue, Event_Create(RELEASE, simulation->current_time + service_time, (EventRelative){ .device = device }));
 
@@ -193,6 +200,7 @@ bool Simulation_Step(Simulation* const simulation)
                     {
                         printf("Отказано заявке с временем поступления в буфер t = %" PRIdMAX "\n", denied_request->arrival_time);
                         Request_Destroy(denied_request);
+                        ++simulation->denied_requests_count;
                     }
                 }
             }
@@ -204,6 +212,7 @@ bool Simulation_Step(Simulation* const simulation)
                 Request* const finished = Device_FinishService(d);
 
                 Request_Destroy(finished);
+                ++simulation->total_requests_count;
 
                 Request* from_buffer = Buffer_Poll(simulation->buffer);
 
@@ -213,6 +222,9 @@ bool Simulation_Step(Simulation* const simulation)
 
                     Device_StartService(d, from_buffer, simulation->current_time, service_time);
                     PriorityQueue_Enqueue(simulation->event_queue, Event_Create(RELEASE, simulation->current_time + service_time, (EventRelative){.device = d }));
+
+                    simulation->total_queueing_time += (from_buffer->service_start_time - from_buffer->arrival_time) + service_time;
+                    simulation->total_used_time     += service_time;
 
                     printf("t = %" PRIdMAX ": Начало обслуживания заявки из буфера на приборе №%" PRIuMAX "\n", simulation->current_time, Device_GetID(d));
                     printf("Длительность обслуживания t = %" PRIdMAX "\n", service_time);
@@ -250,8 +262,23 @@ const Buffer* Simulation_GetBuffer(const Simulation* const simulation)
     return simulation->buffer;
 }
 
-const PriorityQueue* Simulation_GetEventQueue(const Simulation* simulation)
+const PriorityQueue* Simulation_GetEventQueue(const Simulation* const simulation)
 {
     assert(simulation);
     return simulation->event_queue;
+}
+
+double Simulation_GetDenyProbability(const Simulation* const simulation)
+{
+    return (double)simulation->denied_requests_count / simulation->total_requests_count * 100;
+}
+
+double Simulation_GetAverageQueueingTime(const Simulation* const simulation)
+{
+    return (double)simulation->total_queueing_time / (SOURCE_REQUESTS_COUNT * Vector_Size(simulation->devices));
+}
+
+double Simulation_GetDeviceLoadCoefficient(const Simulation* const simulation)
+{
+    return (double)simulation->total_used_time / (simulation->current_time * Vector_Size(simulation->devices));
 }

@@ -67,4 +67,10 @@ const Buffer* Simulation_GetBuffer(const Simulation* simulation);
 ///
 const PriorityQueue* Simulation_GetEventQueue(const Simulation* simulation);
 
+double Simulation_GetDenyProbability(const Simulation* simulation);
+
+double Simulation_GetAverageQueueingTime(const Simulation* simulation);
+
+double Simulation_GetDeviceLoadCoefficient(const Simulation* simulation);
+
 #endif
