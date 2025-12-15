@@ -2,13 +2,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define NUM_SOURCES  3
-#define NUM_DEVICES  3
-#define BUFFER_SIZE  2
+#define NUM_SOURCES  7
+#define NUM_DEVICES  5
+#define BUFFER_SIZE  4
 #define MIN_INTERVAL 15.0
 #define MAX_INTERVAL 30.0
 #define SERVICE_RATE 0.1
-#define MAX_TIME     200
+#define MAX_TIME     10000
 
 int main()
 {
