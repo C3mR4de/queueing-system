@@ -13,12 +13,12 @@ struct Device
 
 Device* Device_Create(const ID id)
 {
-    Device* device = malloc(sizeof(Device));
+    Device* const device = malloc(sizeof(Device));
 
     if (!device)
         return NULL;
     
-    Device tmp = (Device) { .id = id };
+    const Device tmp = (Device) { .id = id };
     memcpy(device, &tmp, sizeof(Device));
     return device;
 }
@@ -28,7 +28,13 @@ void Device_Destroy(Device* const device)
     free(device);
 }
 
-void Device_StartService(Device* const device, Request* const request, const TimeMoment current_time, const double service_time)
+ID Device_GetID(const Device* const device)
+{
+    assert(device);
+    return device->id;
+}
+
+void Device_StartService(Device* const restrict device, Request* const restrict request, const TimeMoment current_time, const double service_time)
 {
     assert(device);
 
@@ -44,7 +50,7 @@ Request* Device_FinishService(Device* const device)
     assert(device);
 
     device->is_busy = false;
-    Request* finished = device->current_request;
+    Request* const finished = device->current_request;
     device->current_request = NULL;
 
     return finished;

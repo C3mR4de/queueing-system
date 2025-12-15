@@ -3,14 +3,14 @@
 #include <assert.h>
 #include <string.h>
 
-Request* Request_Create(ID source_id, TimeMoment arrival_time)
+Request* Request_Create(const ID source_id, const TimeMoment arrival_time)
 {
-    Request* request = malloc(sizeof(Request));
+    Request* const request = malloc(sizeof(Request));
 
     if (!request)
         return NULL;
 
-    Request tmp = (Request)
+    const Request tmp = (Request)
     {
         .source_id    = source_id,
         .arrival_time = arrival_time

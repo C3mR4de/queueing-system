@@ -3,19 +3,18 @@
 #include <stdlib.h>
 #include <string.h>
 
-Event* Event_Create(const Type type, const TimeMoment time, Source* const source, Device* const device)
+Event* Event_Create(const EventType type, const TimeMoment time, const EventRelative relative)
 {
-    Event* event = malloc(sizeof(Event));
+    Event* const event = malloc(sizeof(Event));
 
     if (!event)
         return NULL;
 
     Event tmp = (Event)
     {
-        .type   = type,
-        .time   = time,
-        .source = source,
-        .device = device
+        .type     = type,
+        .time     = time,
+        .relative = relative
     };
 
     memcpy(event, &tmp, sizeof(Event));
